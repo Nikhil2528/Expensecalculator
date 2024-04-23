@@ -39,20 +39,32 @@ def edit_expense(date, new_expense):
 
 def check_budget():
     today = datetime.now().date()
-    thirty_days_ago = today - timedelta(days=30)
+    fourteen_days_ago = today - timedelta(days=14)
     total_expenses = 0
+    days_expenses = 0
     with open('expenses.json', 'r') as file:
         data = json.load(file)
     for date, expenses in data.items():
         date_obj = datetime.strptime(date, "%Y-%m-%d").date()
-        if thirty_days_ago <= date_obj <= today:
+        if fourteen_days_ago <= date_obj <= today:
             total_expenses += sum(expenses)
-    budget = 700
-    if total_expenses > budget:
-        print(f"Warning: Total expenses for the last 30 days (${total_expenses}) exceed the budget (${budget}).")
-        return True
+            days_expenses += 1
+    budget = 500
+    fifty_percent_budget = budget * 0.5
+    remaining_days = 14 - days_expenses
+    remaining_budget = budget - total_expenses
+    budget_per_day = remaining_budget / remaining_days
+    if days_expenses == 14 and total_expenses >= fifty_percent_budget:
+        print(f"Warning: You have used 50% of your budget after 14 days.")
+    elif days_expenses > 14:
+        print(f"Warning: You have exceeded 14 days of expenses.")
+    elif total_expenses > budget:
+        print(f"Warning: Total expenses for the last 14 days (${total_expenses}) exceed the budget (${budget}).")
     else:
-        return False
+        print(f"Remaining budget for the next {remaining_days} days: ${remaining_budget}")
+        print(f"Budget per day for the remaining period: ${budget_per_day:.2f}")
+    return total_expenses
+    
 
 def main(edit_or_add):
     if edit_or_add == 'edit':
