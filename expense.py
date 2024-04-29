@@ -49,7 +49,7 @@ def check_budget():
         if fourteen_days_ago <= date_obj <= today:
             total_expenses += sum(expenses)
             days_expenses += 1
-    budget = 500
+    budget = 1000
     fifty_percent_budget = budget * 0.5
     remaining_days = 14 - days_expenses
     remaining_budget = budget - total_expenses
